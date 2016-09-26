@@ -27,7 +27,7 @@ plate <- readPlateMap(file="AP12_layout.csv", blank.id="blank",fsep="\n", fields
 ... and parse the data, as exported from platereader software:
 
 ```R
-raw <- readPlateData(file="AP12.csv", type="Synergy", data.ids=c("600","YFP_50:500,535"), dec=",")
+raw <- readPlateData(file="AP12.csv", type="Synergy", data.ids=c("600","YFP_50:500,535"))
 ```
 
 ### 2) Inspect and process the raw data
