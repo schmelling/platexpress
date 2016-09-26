@@ -8,9 +8,9 @@ data, blank normalization, and summarization over replicates.
 
 (TODO) A few data conversion routines allow to interface other R
 packages for analysis of microbial growth such as
-[https://cran.r-project.org/web/packages/grofit/index.html](grofit)
+[grofit](https://cran.r-project.org/web/packages/grofit/index.html)
 and
-[https://cran.r-project.org/web/packages/growthcurver/index.html](growthcurver)
+[growthcurver](https://cran.r-project.org/web/packages/growthcurver/index.html)
 and quickly display their results within `platexpress`.
 
 
