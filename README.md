@@ -15,41 +15,52 @@ and quickly display their results within `platexpress`.
 
 
 ## A Typical Workflow in `platexpress`
-### 1) parse the plate layout map
+### 1) Parse the plate layout and measurements 
+
+The plate layout will later allow to group experiments and do
+blank correction.
 
 ```R
 plate.file <- system.file("extdata", "AP12_layout.csv", package = "platexpress")
 plate <- readPlateMap(file=plate.file, blank.id="blank",fsep="\n", fields=c("strain","samples"))
 ```
 
-### 2) parse the data, exported from platereader software
+... and parse the data, as exported from platereader software
 
 ```R
 data.file <- system.file("extdata", "AP12.csv", package = "platexpress")
 raw <- readPlateData(file=data.file, type="Synergy", data.ids=c("600","YFP_50:500,535"), dec=",")
 ```
 
-### 3) inspect the raw data
+### 3) Inspect and process the raw data
+
+Take a first look
 
 ```R
 vp <- viewPlate(raw)
 ```
 
-### 4) Note that there is no growth in A9, so let's skip it
+... note that there is no growth in A9, so let's skip it
 
 ```R
 raw <- skipWells(raw, skip="A9")
 ```
 
-### 5) Now correct for blank well measurements, and view only present
-### rows/cols
+... correct for blank well measurements (defined in the plate layout
+map!) and view only the present rows (A, B and C) and columns (1-9)
 
 ```R
 data <- correctBlanks(data=raw, plate=plate)
 vp <- viewPlate(data, rows=c("A","B","C"),cols=1:9)
 ```
 
-### 6) group replicates and view summarized growth/exprssion curves
+### 4) Group replicates
+
+And finally, generate groups over replicates and strains
+and view summarized growth vs. expression curves for these groups.
+The areas indicate the t-test based 95% confidence interval,
+the thick line is the mean, and optionally, you can keep also
+the original data in the plot (by choosing a lwd.orig > 0):
 
 ```R
 groups <- getGroups(plate, by=c("strain","samples"))
