@@ -61,6 +61,6 @@ the thick line is the mean, and optionally, you can keep also
 the original data in the plot (by choosing a lwd.orig > 0):
 
 ```R
-groups <- getGroups(plate, by=c("strain"))
+groups <- getGroups(plate, by="strain")
 viewGroups(data,groups=groups,lwd.orig=0,nrow=1)
 ```
