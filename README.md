@@ -62,5 +62,5 @@ the original data in the plot (by choosing a lwd.orig > 0):
 
 ```R
 groups <- getGroups(plate, by=c("strain"))
-vg <- viewGroups(data,groups=groups,lwd.orig=0.5,nrow=1)
+vg <- viewGroups(data,groups=groups,lwd.orig=0,nrow=1)
 ```
