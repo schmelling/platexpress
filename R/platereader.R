@@ -4,11 +4,40 @@
 #'
 #' The platexpress package provides a quick&easy interface to 
 #' microbial growth & gene expression data as measured in typical
-#' microplate-readers or other growth systems.
+#' microplate-readers or other parallel growth systems.
 #' 
-#' @section Platexpress functions:
-#' The platexpress functions 
-#'
+#' @section Platexpress Workflow
+#' @examples
+#' ### A TYPICAL WORKFLOW
+#' ## 1) parse the plate layout map
+#' 
+#' plate.file <- system.file("extdata", "AP12_layout.csv", package = "platexpress")
+#' plate <- readPlateMap(file=plate.file, blank.id="blank",fsep="\n", fields=c("strain","samples"))
+#' 
+#' ## 2) parse the data, exported from platereader software
+#' 
+#' data.file <- system.file("extdata", "AP12.csv", package = "platexpress")
+#' raw <- readPlateData(file=data.file, type="Synergy", data.ids=c("600","YFP_50:500,535"), dec=",")
+#' 
+#' ## 3) inspect the raw data
+#' 
+#' vp <- viewPlate(raw)
+#' 
+#' ## 4) Note that there is no growth in A9, so let's skip it
+#' 
+#' raw <- skipWells(raw, skip="A9")
+#' 
+#' ## 5) Now correct for blank well measurements, and view only present
+#' ## rows/cols
+#' 
+#' data <- correctBlanks(data=raw, plate=plate)
+#' vp <- viewPlate(data, rows=c("A","B","C"),cols=1:9)
+#' 
+#' ## 6) group replicates and view summarized growth/exprssion curves
+#' 
+#' groups <- getGroups(plate, by=c("strain","samples"))
+#' vg <- viewGroups(data,groups=groups,lwd.orig=0.5,nrow=3)
+#' 
 #' @docType package
 #' @name platexpress
 NULL
@@ -307,6 +336,8 @@ readBMGPlate <- function(files, data.ids, interpolate=TRUE,
 
 #' set wells that should be skipped from all analyses and plots to NA
 #' @param skip a list of strings identifiying the wells to be skipped, e.g. "B3" to skip the well in row B/column 3
+#' @examples
+#' raw <- skipWells(raw, skip="A9")
 #' @export
 skipWells <- function(data, skip) {
     for ( i in 1:length(data) ) {
@@ -323,7 +354,10 @@ skipWells <- function(data, skip) {
 #' @param data the data list to be blank-corrected
 #' @param plate the plate layout where column "blanks" indicates which wells are to be treated as blanks
 #' @param dids IDs of the data which should be blank-corrected, all will be blanked if missing
-#' @param by a list of column IDs of the plate layout; separate blank correction will be attempted for groups in these columns; each group must have at least one specified blank associated 
+#' @param by a list of column IDs of the plate layout; separate blank correction will be attempted for groups in these columns; each group must have at least one specified blank associated
+#' @examples
+#' data(ap12)
+#' data <- correctBlanks(data=ap12data, plate=ap12plate, by="strain")
 #' @export
 correctBlanks <- function(data, plate, dids, by,
                           mids=c(time="Time",temp="Temperature")) {
@@ -640,7 +674,35 @@ getGroups <- function(plate, by="medium", verb=TRUE) {
 ## vg <- viewGroups(data,groups=groups,lwd.orig=0.1,nrow=3)
 
 #' plot grouped wells as summary plots, incl. confidence intervals and means
-#' @seealso \code{\link{getGroups}}, \code{\link{readPlateMap}}
+#' @param data the list of measurement data as provided by \code{\link{readPlateData}}
+#' @param groups a list of well grouped wells, as produced by \code{\link{getGroups}}
+#' @param nrows number of plot rows
+#' @param mids vector of named strings, indicating the IDs of the master
+#' time and temperature vectors in the data
+#' @param xid ID of a data-set in the input data that can be used as x-axis
+#' instead of the default Time vector
+#' @param dids IDs of the data to be plotted; if missing, all data will
+#' be plotted
+#' @param xscale use a global range for the x-axes; only relevant if xid specifies a subset of the data as x-axis
+#' @param xlim plot range of the x-axis
+#' @param pcols a named list of RGB colors to be used the plotted data types; the color vector must have names according to the data IDs
+#' @param yscale if TRUE (default) global y-axis limits will be calculated from
+#' all plotted wells; if FALSE each well be locally scaled
+#' @param ylims a named list of y-axis ranges pairs for each data ID
+#' @param ylim one y-axis limit range that will be used for all plotted data
+#' @param log plot logarithmic axis, use equivalent to normal plot 'log', i.e.,
+#' log="y" for a log y-axis, log="x" for x-axis and log="yx" for both axes
+#' @param legpos position of the well IDs on the plots
+#' @param lwd.orig line-width of the original single data, set to 0 to supress plotting of all original data
+#' @param mai set the outer margins around plot areas, see ?par
+#' @param mgp set the position of axis title, tick marks and tick lengths
+#' @param xaxis plot x-axis if TRUE
+#' @param yaxis plot y-axis if TRUE
+#' @seealso \code{\link{viewPlate}}, \code{\link{getGroups}}, \code{\link{readPlateMap}}
+#' @examples
+#' data(ap12)
+#' groups <- getGroups(plate=ap12plate, by=c("strain"))
+#' vg <- viewGroups(ap12data,groups=groups,lwd.orig=0.1,nrow=1)
 #' @export
 viewGroups <- function(data, groups,
                        mids=c(time="Time", temp="Temperature"), 

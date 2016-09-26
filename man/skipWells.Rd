@@ -12,4 +12,7 @@ skipWells(data, skip)
 \description{
 set wells that should be skipped from all analyses and plots to NA
 }
+\examples{
+raw <- skipWells(raw, skip="A9")
+}
 

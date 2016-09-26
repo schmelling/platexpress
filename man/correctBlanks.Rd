@@ -19,4 +19,8 @@ correctBlanks(data, plate, dids, by, mids = c(time = "Time", temp =
 \description{
 \code{\link{correctBlanks}} correct for blanks
 }
+\examples{
+data(ap12)
+data <- correctBlanks(data=ap12data, plate=ap12plate, by="strain")
+}
 
