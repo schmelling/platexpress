@@ -160,14 +160,14 @@ readPlateMap <- function(file, sep="\t", fsep="\n", blank.id="blank",
 #' raw <- readPlateData(file=data.file, type="Synergy", data.ids=c("600","YFP_50:500,535"), dec=",")
 #' @export
 readPlateData <- function(files, type, data.ids, interpolate=TRUE,
-                          skip=0, sep="\t", dec=".", verb=TRUE, ...) {
+                          skip=0, sep="\t", dec=".", pcols, verb=TRUE, ...) {
 
     if ( type=="BMG" )
       readBMGPlate(files=files, data.ids=data.ids, interpolate=interpolate,
-                   verb=verb, skip=5, sep=";", dec=".")
+                   verb=verb, skip=5, sep=";", dec=".", pcols)
     else if ( type=="Synergy" )
       readSynergyPlate(file=files, data.ids=data.ids, interpolate=interpolate,
-                       verb=verb, skip=58, sep=";", dec=".")
+                       verb=verb, skip=58, sep=";", dec=".", pcols)
 } 
 
 # Read Synergy Mx-exported files
@@ -176,7 +176,7 @@ readPlateData <- function(files, type, data.ids, interpolate=TRUE,
 #' @export
 readSynergyPlate <- function(file, data.ids, interpolate=TRUE,
                              skip=58, sep=";", dec=".",
-                             verb=TRUE) {
+                             pcols, verb=TRUE) {
 
     indat <- read.csv(file, header=FALSE,stringsAsFactors=FALSE,
                      sep=sep, dec=dec, skip=skip)
@@ -222,6 +222,13 @@ readSynergyPlate <- function(file, data.ids, interpolate=TRUE,
     for ( i in 1:length(data) ) 
       data[[i]]$time <- data[[i]]$time - t0
     
+    ## add colors
+    ## TODO: use these in plots
+    ## TODO: check passed pcols
+    if ( missing(pcols) ) 
+        data$colors <- setColors(ptypes)
+    else data$colors <- pcols
+
     ## INTERPOLATION:
     ## interpolate data: this adds a master time and temperature
     ## and interpolates all data to this time; if this step
@@ -242,7 +249,7 @@ readSynergyPlate <- function(file, data.ids, interpolate=TRUE,
 #' @seealso \code{\link{readPlateData}}
 #' @export
 readBMGPlate <- function(files, data.ids, interpolate=TRUE,
-                         skip=5, sep=";", dec=".", verb=TRUE) {
+                         skip=5, sep=";", dec=".", verb=TRUE, pcols) {
 
     data <- list()
     ## 1) PARSE ALL DATA FILES and collect the individual measurements
@@ -321,6 +328,13 @@ readBMGPlate <- function(files, data.ids, interpolate=TRUE,
         data <- append(data,dlst)
     }
 
+    ## add colors
+    ## TODO: use these in plots
+    ## TODO: check passed pcols
+    if ( missing(pcols) ) 
+        data$colors <- setColors(ptypes)
+    else data$colors <- pcols
+
     ## NOTE: at this stage, data between different plate-readers
     ## should already look similar; each entry containing separate
     ## time and temperature vectors
@@ -329,9 +343,17 @@ readBMGPlate <- function(files, data.ids, interpolate=TRUE,
     ## interpolate data: this adds a master time and temperature
     ## and interpolates all data to this time; if this step
     ## is omitted, there will be no global master time!
+
     if ( interpolate )
       data <- interpolatePlateTimes(data, verb=verb)
     data
+}
+
+setColors <- function(ptypes) {
+    ## colors
+    pcols <- getRGB(length(ptypes))
+    names(pcols) <- ptypes
+    ptypes
 }
 
 #' set wells that should be skipped from all analyses and plots to NA
@@ -570,12 +592,19 @@ viewPlate <- function(data,rows=toupper(letters[1:8]),cols=1:12,
         ylims <- rep(list(ylim),length(ptypes))
         names(ylims) <- ptypes
     }
+
     ## colors
-    if ( missing(pcols) ) {
+    if ( !"colors" %in% names(data) )
         ## as color palette 1:n, but in RGB to allow alpha
         pcols <- getRGB(length(ptypes))
         names(pcols) <- ptypes
     }
+    ## colors - TODO - add only missing colors
+    #if ( !"colors" %in% names(data) )
+    #    ## as color palette 1:n, but in RGB to allow alpha
+    #    pcols <- getRGB(length(ptypes))
+    #    names(pcols) <- ptypes
+    #}
     
     ## plot plate
     par(mfcol=c(length(rows),length(cols)),mai=rep(0,4))
@@ -774,6 +803,12 @@ viewGroups <- function(data, groups,
         pcols <- getRGB(length(ptypes))
         names(pcols) <- ptypes
     }
+    ## colors - TODO - add only missing colors
+    #if ( !"colors" %in% names(data) )
+    #    ## as color palette 1:n, but in RGB to allow alpha
+    #    pcols <- getRGB(length(ptypes))
+    #    names(pcols) <- ptypes
+    #}
 
     if ( length(groups)>1 ) {
         ncol <- ceiling(length(groups)/nrow)
