@@ -1,9 +1,14 @@
-# `platexpress` - An R Package for Inspection and Analysis of Microbial Growth & Gene Expression Experiments
+# `platexpress` - Microbial Growth & Gene Expression
 
 
-The platexpress package provides a quick&easy interface to microbial
-growth & gene expression data as measured in typical
-microplate-readers or other parallel growth systems.
+The platexpress package provides a quick & easy interface to microbial
+growth & gene expression data as measured in parallel growth platforms
+such as microplate readers. It allows for quick summarization over
+replicates and quick comparison between experiments.
+
+(TODO) A few data conversion routines allow to interface other R
+packages for analysis of microbial growth such as `grofit` and
+`growthcurver` and quickly display their results within `platexpress`.
 
 
 ## A Typical Workflow in platexpress
