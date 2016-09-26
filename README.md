@@ -17,14 +17,14 @@ and quickly display their results within `platexpress`.
 ## A Typical Workflow in `platexpress`
 ### 1) Parse the plate layout and measurements 
 
-The plate layout will later allow to group experiments and do
-blank correction.
+The plate layout will later allow to do blank correction and group
+experiments:
 
 ```R
 plate <- readPlateMap(file="AP12_layout.csv", blank.id="blank",fsep="\n", fields=c("strain","samples"))
 ```
 
-... and parse the data, as exported from platereader software
+... and parse the data, as exported from platereader software:
 
 ```R
 raw <- readPlateData(file="AP12.csv", type="Synergy", data.ids=c("600","YFP_50:500,535"), dec=",")
@@ -32,20 +32,20 @@ raw <- readPlateData(file="AP12.csv", type="Synergy", data.ids=c("600","YFP_50:5
 
 ### 2) Inspect and process the raw data
 
-Take a first look
+Take a first look:
 
 ```R
 vp <- viewPlate(raw)
 ```
 
-... note that there is no growth in A9, so let's skip it
+... and note that there is no growth in A9, so let's skip it:
 
 ```R
 raw <- skipWells(raw, skip="A9")
 ```
 
 ... correct for blank well measurements (defined in the plate layout
-map!) and view only the present rows (A, B and C) and columns (1-9)
+map!) and view only the present rows (A, B and C) and columns (1-9):
 
 ```R
 data <- correctBlanks(data=raw, plate=plate)
