@@ -35,7 +35,7 @@ raw <- readPlateData(file="AP12.csv", type="Synergy", data.ids=c("600","YFP_50:5
 Take a first look:
 
 ```R
-vp <- viewPlate(raw)
+viewPlate(raw)
 ```
 
 ... and note that there is no growth in A9, so let's skip it:
@@ -49,7 +49,7 @@ map!) and view only the present rows (A, B and C) and columns (1-9):
 
 ```R
 data <- correctBlanks(data=raw, plate=plate)
-vp <- viewPlate(data, rows=c("A","B","C"),cols=1:9)
+viewPlate(data, rows=c("A","B","C"),cols=1:9)
 ```
 
 ### 3) Group replicates
@@ -62,5 +62,5 @@ the original data in the plot (by choosing a lwd.orig > 0):
 
 ```R
 groups <- getGroups(plate, by=c("strain"))
-vg <- viewGroups(data,groups=groups,lwd.orig=0,nrow=1)
+viewGroups(data,groups=groups,lwd.orig=0,nrow=1)
 ```

@@ -612,7 +612,9 @@ viewPlate <- function(data,rows=toupper(letters[1:8]),cols=1:12,
               }
           }
       }
-    return(list(ylims=ylims, xlim=xlim))
+    ## TODO: find out how to do silent returns (like plot/hist etc.)
+    ## and return meaningful and/or non-plotted information
+    ##return(list(ylims=ylims, xlim=xlim))
 }
 
 
@@ -814,7 +816,9 @@ viewGroups <- function(data, groups,
         if ( xaxis ) axis(1)
         if ( yaxis ) axis(2)
     }
-    ylims
+    ## TODO: find out how to do silent returns (like plot/hist etc.)
+    ## and return meaningful and/or non-plotted information
+    ##return(list(ylims=ylims, xlim=xlim))
 }
 
 
