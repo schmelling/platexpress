@@ -3,15 +3,18 @@
 
 The platexpress package provides a quick & easy interface to microbial
 growth & gene expression data as measured in parallel growth platforms
-such as microplate readers. It allows for quick summarization over
-replicates and quick comparison between experiments.
+such as microplate readers. It allows for quick inspection of raw
+data, blank normalization, and summarization over replicates.
 
 (TODO) A few data conversion routines allow to interface other R
-packages for analysis of microbial growth such as `grofit` and
-`growthcurver` and quickly display their results within `platexpress`.
+packages for analysis of microbial growth such as
+[https://cran.r-project.org/web/packages/grofit/index.html](grofit)
+and
+[https://cran.r-project.org/web/packages/growthcurver/index.html](growthcurver)
+and quickly display their results within `platexpress`.
 
 
-## A Typical Workflow in platexpress
+## A Typical Workflow in `platexpress`
 ### 1) parse the plate layout map
 
 ```R
