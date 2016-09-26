@@ -21,18 +21,16 @@ The plate layout will later allow to group experiments and do
 blank correction.
 
 ```R
-plate.file <- system.file("extdata", "AP12_layout.csv", package = "platexpress")
-plate <- readPlateMap(file=plate.file, blank.id="blank",fsep="\n", fields=c("strain","samples"))
+plate <- readPlateMap(file="AP12_layout.csv", blank.id="blank",fsep="\n", fields=c("strain","samples"))
 ```
 
 ... and parse the data, as exported from platereader software
 
 ```R
-data.file <- system.file("extdata", "AP12.csv", package = "platexpress")
-raw <- readPlateData(file=data.file, type="Synergy", data.ids=c("600","YFP_50:500,535"), dec=",")
+raw <- readPlateData(file="AP12.csv", type="Synergy", data.ids=c("600","YFP_50:500,535"), dec=",")
 ```
 
-### 3) Inspect and process the raw data
+### 2) Inspect and process the raw data
 
 Take a first look
 
@@ -54,7 +52,7 @@ data <- correctBlanks(data=raw, plate=plate)
 vp <- viewPlate(data, rows=c("A","B","C"),cols=1:9)
 ```
 
-### 4) Group replicates
+### 3) Group replicates
 
 And finally, generate groups over replicates and strains
 and view summarized growth vs. expression curves for these groups.
