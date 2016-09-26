@@ -459,6 +459,26 @@ interpolatePlateTimes <- function(data, verb=TRUE) {
 
 
 #' \code{\link{viewPlate}} plots all data in plate format
+#' @param data the list of measurement data as provided by \code{\link{readPlateData}}
+#' @param rows a list of strings/characters used as row ID in the composite
+#' row:col well description in the plate layout (map) and plate data
+#' @param cols as rows but plate column IDs
+#' @param mids vector of named strings, indicating the IDs of the master
+#' time and temperature vectors in the data
+#' @param xid ID of a data-set in the input data that can be used as x-axis
+#' instead of the default Time vector
+#' @param dids IDs of the data to be plotted; if missing, all data will
+#' be plotted
+#' @param xscale use a global range for the x-axes; only relevant if xid specifies a subset of the data as x-axis
+#' @param xlim plot range of the x-axis
+#' @param pcols a named list of RGB colors to be used the plotted data types; the color vector must have names according to the data IDs
+#' @param yscale if TRUE (default) global y-axis limits will be calculated from
+#' all plotted wells; if FALSE each well be locally scaled
+#' @param ylims a named list of y-axis ranges pairs for each data ID
+#' @param ylim one y-axis limit range that will be used for all plotted data
+#' @param log plot logarithmic axis, use equivalent to normal plot 'log', i.e.,
+#' log="y" for a log y-axis, log="x" for x-axis and log="yx" for both axes
+#' @param legpos position of the well IDs on the plots
 #' @examples
 #' data(ap12data)
 #' vp <- viewPlate(ap12data)

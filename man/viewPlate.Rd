@@ -8,6 +8,41 @@ viewPlate(data, rows = toupper(letters[1:8]), cols = 1:12, mids = c(time =
   "Time", temp = "Temperature"), xid, xscale = FALSE, xlim, dids, pcols,
   yscale = TRUE, ylims, ylim, log = "", legpos = "topleft")
 }
+\arguments{
+\item{data}{the list of measurement data as provided by \code{\link{readPlateData}}}
+
+\item{rows}{a list of strings/characters used as row ID in the composite
+row:col well description in the plate layout (map) and plate data}
+
+\item{cols}{as rows but plate column IDs}
+
+\item{mids}{vector of named strings, indicating the IDs of the master
+time and temperature vectors in the data}
+
+\item{xid}{ID of a data-set in the input data that can be used as x-axis
+instead of the default Time vector}
+
+\item{xscale}{use a global range for the x-axes; only relevant if xid specifies a subset of the data as x-axis}
+
+\item{xlim}{plot range of the x-axis}
+
+\item{dids}{IDs of the data to be plotted; if missing, all data will
+be plotted}
+
+\item{pcols}{a named list of RGB colors to be used the plotted data types; the color vector must have names according to the data IDs}
+
+\item{yscale}{if TRUE (default) global y-axis limits will be calculated from
+all plotted wells; if FALSE each well be locally scaled}
+
+\item{ylims}{a named list of y-axis ranges pairs for each data ID}
+
+\item{ylim}{one y-axis limit range that will be used for all plotted data}
+
+\item{log}{plot logarithmic axis, use equivalent to normal plot 'log', i.e.,
+log="y" for a log y-axis, log="x" for x-axis and log="yx" for both axes}
+
+\item{legpos}{position of the well IDs on the plots}
+}
 \description{
 \code{\link{viewPlate}} plots all data in plate format
 }
