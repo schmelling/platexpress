@@ -5,7 +5,7 @@
 \title{Read BMG Optima/MARS-exported files}
 \usage{
 readBMGPlate(files, data.ids, interpolate = TRUE, skip = 5, sep = ";",
-  dec = ".", verb = TRUE)
+  dec = ".", verb = TRUE, pcols)
 }
 \arguments{
 \item{files}{list of one or more data files}
