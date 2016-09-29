@@ -44,10 +44,17 @@ NULL
 
 
 ### HELPERS
+
+## return R colors as RGB, to allow setting alpha
 getRGB <- function(n) {
     cols <- col2rgb(1:n)
     apply(cols,2,function(x) rgb(x[1],x[2],x[3],maxColorValue=255))
 }
+
+## trim leading and trailing white-space from parsed strings
+trim <- function(str)
+  gsub(" *$", "", gsub("^ *", "", str) )
+
 
 ### STATS
 
@@ -115,7 +122,7 @@ readPlateMap <- function(file, sep="\t", fsep="\n", blank.id="blank",
 
     values <- matrix("",nrow=length(vals),ncol=nvals)
     for ( i in 1:nvals ) 
-      values[,i] <- as.character(unlist(lapply(vals, function(x) x[i])))
+      values[,i] <- as.character(unlist(lapply(vals, function(x) trim(x[i]))))
 
     if ( missing(fields) )
       colnames(values) <- paste("X",1:nvals,sep="")
@@ -160,14 +167,14 @@ readPlateMap <- function(file, sep="\t", fsep="\n", blank.id="blank",
 #' raw <- readPlateData(file=data.file, type="Synergy", data.ids=c("600","YFP_50:500,535"), dec=",")
 #' @export
 readPlateData <- function(files, type, data.ids, interpolate=TRUE,
-                          skip=0, sep="\t", dec=".", pcols, verb=TRUE, ...) {
+                          skip=0, sep="\t", dec=".", verb=TRUE, ...) {
 
     if ( type=="BMG" )
       readBMGPlate(files=files, data.ids=data.ids, interpolate=interpolate,
-                   verb=verb, skip=5, sep=";", dec=".", pcols)
+                   verb=verb, skip=5, sep=";", dec=".", ...)
     else if ( type=="Synergy" )
       readSynergyPlate(file=files, data.ids=data.ids, interpolate=interpolate,
-                       verb=verb, skip=58, sep=";", dec=".", pcols)
+                       verb=verb, skip=58, sep=";", dec=".", ...)
 } 
 
 # Read Synergy Mx-exported files
@@ -175,7 +182,7 @@ readPlateData <- function(files, type, data.ids, interpolate=TRUE,
 #' @seealso \code{\link{readPlateData}}
 #' @export
 readSynergyPlate <- function(file, data.ids, interpolate=TRUE,
-                             skip=58, sep=";", dec=".",
+                             skip=58, sep=";", dec=".", skiplastcol=FALSE,
                              pcols, verb=TRUE) {
 
     indat <- read.csv(file, header=FALSE,stringsAsFactors=FALSE,
@@ -206,13 +213,19 @@ readSynergyPlate <- function(file, data.ids, interpolate=TRUE,
         ## columns:
         ## time: column 2; temperature: column 3;
         ## data: columns 4 to last-1; last data set ends with nrow
-        cols <- 4:(ncol(indat)-1)
+        lcol <- ncol(indat)
+        if ( skiplastcol  ) lcol <- lcol -1
+        cols <- 4:lcol
         time <- as.numeric(strptime(indat[sidx:eidx,2],format <- "%H:%M:%S"))
         temp <-  as.numeric(sub(",",".",indat[sidx:eidx,3]))
         dat <- matrix(as.numeric(sub(",",".",unlist(indat[sidx:eidx,cols]))),
                       ncol=length(cols),nrow=length(sidx:eidx))
         ## get columns and change Temperature ID
         colnames(dat) <- as.character(indat[hidx,cols])
+        ## check last columns (sometimes empty, sometimes not)
+        emptycols <- which(colnames(dat)=="NA")
+        if ( length(emptycols)>0 )
+          dat <- dat[,-emptycols]
         data[[dataID]] <- list(time=time, temp=temp, data=dat)
     }
 
@@ -225,9 +238,9 @@ readSynergyPlate <- function(file, data.ids, interpolate=TRUE,
     ## add colors
     ## TODO: use these in plots
     ## TODO: check passed pcols
-    if ( missing(pcols) ) 
-        data$colors <- setColors(ptypes)
-    else data$colors <- pcols
+    #if ( missing(pcols) ) 
+    #    data$colors <- setColors(dataIDs)
+    #else data$colors <- pcols
 
     ## INTERPOLATION:
     ## interpolate data: this adds a master time and temperature
@@ -331,9 +344,9 @@ readBMGPlate <- function(files, data.ids, interpolate=TRUE,
     ## add colors
     ## TODO: use these in plots
     ## TODO: check passed pcols
-    if ( missing(pcols) ) 
-        data$colors <- setColors(ptypes)
-    else data$colors <- pcols
+    #if ( missing(pcols) ) 
+    #    data$colors <- setColors(ptypes)
+    #else data$colors <- pcols
 
     ## NOTE: at this stage, data between different plate-readers
     ## should already look similar; each entry containing separate
@@ -594,7 +607,7 @@ viewPlate <- function(data,rows=toupper(letters[1:8]),cols=1:12,
     }
 
     ## colors
-    if ( !"colors" %in% names(data) )
+    if ( !"colors" %in% names(data) ) {
         ## as color palette 1:n, but in RGB to allow alpha
         pcols <- getRGB(length(ptypes))
         names(pcols) <- ptypes
