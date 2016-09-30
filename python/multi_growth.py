@@ -1,29 +1,36 @@
+import datetime
+from itertools import chain
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-import datetime
 import re
-from itertools import chain
 from scipy import stats
+import seaborn as sns
 
 def read_data(filepath):
     
-    '''Read the multicultivator CSV data, formats NaN values, and return a dataframe.
+    """Read the multicultivator CSV data, formats NaN values, and returns a dataframe.
     
     This function has not much functionality, however, it simplifies 
     the process of reading the data into a functional dataframe.
     For now this is all it needs to do. If we encounter any variations
     in the default file, e.g. the note section spans mulitple rows, 
     this function needs to be adapted.
-    '''
+    """
          
     df = pd.read_csv(filepath, skiprows=4, index_col=False, na_values='Overflow')
     
     return df.fillna(0)
 
 def read_layout(filepath):
+    
+    """Read the multicultivator CSV data and parses the note section.
+    
+    This function reads the multicultivator CSV file line by line,
+    extracts the content of each vessel from the note section, 
+    and returns a list with potential columns names for the dataframe 
+    and a list of the vessel contents.
+    """
     
     with open(filepath) as file:
         read = file.readlines()
